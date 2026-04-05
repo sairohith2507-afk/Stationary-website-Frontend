@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Paper & Pen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Paper<span>&Pen</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shopping.html">Shopping</a></li>
+            <li><a href="books.html">Books</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+        <div class="cart-icon">
+            <a href="cart.html">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container" style="padding: 4rem 5%;">
+        <h1 class="section-title">Your Cart</h1>
+        <div id="cart-items" class="cart-list">
+            <!-- Items will be loaded by JS -->
+            <p style="text-align: center; color: #666;">Your cart is currently empty.</p>
+        </div>
+        
+        <div class="cart-total" id="total-container" style="display: none;">
+            <span>Total:</span>
+            <span id="cart-total-value">$0.00</span>
+            <div style="margin-top: 2rem;">
+                <a href="shopping.html" class="btn" style="margin-right: 1rem; border: 2px solid var(--primary-color);">Keep Shopping</a>
+                <a href="checkout.html" class="btn btn-primary">Proceed to Checkout</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Specific script for cart page
+        window.onload = () => {
+            renderCart();
+            updateCartCount();
+        };
+
+        function renderCart() {
+            const items = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const container = document.getElementById('cart-items');
+            const totalContainer = document.getElementById('total-container');
+            const totalValue = document.getElementById('cart-total-value');
+
+            if (items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; margin: 4rem 0;">Your cart is currently empty.</p>';
+                totalContainer.style.display = 'none';
+                return;
+            }
+
+            totalContainer.style.display = 'block';
+            container.innerHTML = '';
+            let total = 0;
+
+            items.forEach((item, index) => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-pencil-alt" style="color: var(--primary-color)"></i>
+                        <div>
+                            <h4 style="margin: 0">${item.name}</h4>
+                            <small>$${item.price.toFixed(2)}</small>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${index})" style="background: none; border: none; color: #ff6b6b; cursor: pointer;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+
+            totalValue.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            let items = JSON.parse(localStorage.getItem('cartItems')) || [];
+            items.splice(index, 1);
+            localStorage.setItem('cartItems', JSON.stringify(items));
+            renderCart();
+            updateCartCount();
+        }
+    </script>
+</body>
+</html>

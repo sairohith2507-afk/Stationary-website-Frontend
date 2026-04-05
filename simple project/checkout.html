@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Paper & Pen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Paper<span>&Pen</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shopping.html">Shopping</a></li>
+            <li><a href="books.html">Books</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+        <div class="cart-icon">
+            <a href="cart.html">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="checkout-grid">
+        <div class="checkout-form">
+            <h2 style="margin-bottom: 2rem;">Shipping & Payment Details</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <input type="text" placeholder="123 Street Address" required>
+                </div>
+                
+                <h3 style="margin: 2rem 0 1rem;">Choose Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-method active" onclick="selectPayment(this)">
+                        <i class="fas fa-credit-card fa-2x"></i>
+                        <p>Card</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment(this)">
+                        <i class="fab fa-paypal fa-2x"></i>
+                        <p>PayPal</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment(this)">
+                        <i class="fas fa-wallet fa-2x"></i>
+                        <p>Apple Pay</p>
+                    </div>
+                </div>
+
+                <div id="card-details">
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>CVV</label>
+                            <input type="password" placeholder="XXX" maxlength="3" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 60px; font-size: 1.1rem; margin-top: 1rem;">Complete Secure Payment</button>
+            </form>
+            
+            <div id="success-message" style="display: none; text-align: center; margin-top: 3rem;">
+                <i class="fas fa-check-circle fa-5x" style="color: var(--secondary-color); margin-bottom: 1.5rem;"></i>
+                <h1>Thank You For Your Order!</h1>
+                <p>Your payment was successful and your stationery is on its way. Expect your tracking number in 24 hours.</p>
+                <a href="index.html" class="btn btn-primary" style="margin-top: 2rem;">Return to Home</a>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3 style="margin-bottom: 1.5rem; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 1rem;">Order Summary</h3>
+            <div id="checkout-summary-items">
+                <!-- Summary items will appear here -->
+            </div>
+            <div style="border-top: 2px solid #eee; margin-top: 1.5rem; padding-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.3rem;">
+                    <span>Total Amount:</span>
+                    <span id="summary-total">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        window.onload = () => {
+            renderSummary();
+            updateCartCount();
+        };
+
+        function selectPayment(element) {
+            document.querySelectorAll('.payment-method').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function renderSummary() {
+            const items = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const container = document.getElementById('checkout-summary-items');
+            const summaryTotal = document.getElementById('summary-total');
+            
+            if (items.length === 0) {
+                window.location.href = 'shopping.html';
+                return;
+            }
+
+            container.innerHTML = '';
+            let total = 0;
+
+            items.forEach(item => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.95rem; color: #555;';
+                div.innerHTML = `<span>${item.name}</span><span>$${item.price.toFixed(2)}</span>`;
+                container.appendChild(div);
+            });
+
+            summaryTotal.textContent = `$${total.toFixed(2)}`;
+        }
+
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulate processing
+            this.style.display = 'none';
+            document.querySelector('.summary-box').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+            
+            // Clear cart
+            localStorage.removeItem('cartItems');
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
