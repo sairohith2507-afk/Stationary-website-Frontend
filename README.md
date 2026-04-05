@@ -1,5 +1,7 @@
 Stationary Website Frontend using vibe Coding 
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/179ce867-2c25-4fbf-8938-191c6e4466fe" />
+
 Here I used to Tech stack
 1. HTML
 2. CSS
